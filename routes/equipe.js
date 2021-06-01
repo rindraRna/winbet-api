@@ -6,7 +6,7 @@ function getEquipes(req, res){
             res.send(err)
         }
         res.send(equipes);
-    });
+    }).sort({nom: 1});
 }
 
 module.exports = { getEquipes };

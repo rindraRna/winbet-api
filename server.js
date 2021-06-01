@@ -2,6 +2,7 @@ let express = require('express');
 let app = express();
 let bodyParser = require('body-parser');
 let championnat = require('./routes/championnat');
+let compte = require('./routes/compte');
 let equipe = require('./routes/equipe');
 let match = require('./routes/match_paris');
 let pari = require('./routes/pari');
@@ -32,7 +33,7 @@ mongoose.connect(uri, options)
 // Pour accepter les connexions cross-domain (CORS)
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,,Authorization");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   next();
 });
@@ -48,6 +49,17 @@ const prefix = '/api';
 
 app.route(prefix + '/championnats')
   .get(championnat.getChampionnats);
+
+app.route(prefix + '/comptes')
+  .get(compte.getComptes);
+app.route(prefix + '/compte/:id')
+  .get(compte.getCompte);
+app.route(prefix + '/compte/inscription')
+  .post(compte.inscrire);
+app.route(prefix + '/compte/login')
+  .post(compte.login);
+app.route(prefix + '/moi')
+  .get(compte.verificationToken,compte.decoder);
 
 app.route(prefix + '/championnat/:id')
   .get(championnat.getChampionnatById);  

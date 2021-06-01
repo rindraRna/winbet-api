@@ -10,9 +10,12 @@
   "author": "Jonatana - Rilah - Rindra",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.6.3",
     "mongoose": "^5.11.2",
+    "mongoose-double": "^0.0.1",
     "multer": "^1.4.2"
   }
 }
