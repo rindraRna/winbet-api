@@ -9,4 +9,13 @@ function getEquipes(req, res){
     }).sort({nom: 1});
 }
 
-module.exports = { getEquipes };
+function getEquipeByNom(req, res){
+    Equipe.findOne({nom: req.params.nom}, (err, equipe) => {
+        if(err){
+            res.send(err)
+        }
+        res.send(equipe);
+    });
+}
+
+module.exports = { getEquipeByNom, getEquipes };

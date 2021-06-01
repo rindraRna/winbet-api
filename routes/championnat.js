@@ -16,6 +16,13 @@ function getChampionnatById(req, res){
     })
 }
 
+function getChampionnatByNom(req, res){
+    Championnat.findOne({nom: req.params.nom}, (err, championnat) =>{
+        if(err){res.send(err)}
+        res.json(championnat);
+    })
+}
+
 // // Ajout d'un assignment (POST)
 // function postAssignment(req, res){
 //     let assignment = new Assignment();
@@ -65,4 +72,4 @@ function getChampionnatById(req, res){
 
 
 
-module.exports = { getChampionnats, getChampionnatById };
+module.exports = { getChampionnatByNom, getChampionnats, getChampionnatById };

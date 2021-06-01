@@ -64,11 +64,21 @@ app.route(prefix + '/moi')
 app.route(prefix + '/championnat/:id')
   .get(championnat.getChampionnatById);  
 
+app.route(prefix + '/championnat/nom/:nom')
+  .get(championnat.getChampionnatByNom);  
+
 app.route(prefix + '/equipes')
   .get(equipe.getEquipes); 
+
+app.route(prefix + '/equipe/:nom')
+  .get(equipe.getEquipeByNom); 
   
 app.route(prefix + '/matchs')
-  .get(match.getMatchs);  
+  .get(match.getMatchs)
+  .post(match.ajout);  
+
+app.route(prefix + '/matchs/dernierId')
+  .get(match.dernierMatchInsere);
 
 app.route(prefix + '/matchs/:idChampionnat')
   .get(match.getMatchsByChampionnat);
@@ -88,7 +98,10 @@ app.route(prefix + '/pari/:idMatch/:idType')
 app.route(prefix + '/pari/:idMatch')
   .get(pari.getPariByIdMatch);    
 
-  app.route(prefix + '/type/:nom')
+app.route(prefix + '/paris')
+  .post(pari.ajout);    
+
+app.route(prefix + '/type/:nom')
   .get(type.getTypeByNom);    
 
 // app.route(prefix + '/assignments/:id')

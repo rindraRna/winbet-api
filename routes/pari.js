@@ -21,4 +21,20 @@ function getPariByIdMatch(req, res){
     });
 }
 
-module.exports = { getPariByIdMatchAndIdType, getPariByIdMatch };
+function ajout(req, res){
+    let pari = new Pari();
+    pari.match = req.body.match;
+    pari.type = req.body.type;
+    pari.valeur = req.body.valeur;
+    pari.cote = req.body.cote;
+    pari.mise = req.body.mise;
+
+    pari.save( (err) => {
+        if(err){
+            res.send('cant post pari ', err);
+        }
+        res.json({ message: "pari enregistré"})
+    })
+}
+
+module.exports = { ajout, getPariByIdMatchAndIdType, getPariByIdMatch };

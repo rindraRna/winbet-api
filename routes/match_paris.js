@@ -1,4 +1,5 @@
 let Match_paris = require('../model/match_paris');
+let pari = require('../routes/pari');
 
 function rechercheMulticritereSansEtat(req, res){
     var date = req.params.date;
@@ -157,4 +158,51 @@ function getMatchs(req, res){
     }).sort({date: -1});
 }
 
-module.exports = { rechercheMulticritereSansEtat, rechercheMulticritere, getMatchById, getMatchs, getMatchsByChampionnat };
+function ajout(req, res){
+    let match = new Match_paris();
+    match.equipe1 = req.body.equipe1;
+    match.equipe2 = req.body.equipe2;
+    match.etat = 0;
+    match.date = req.body.date;
+    match.stade = req.body.stade;
+    match.endroit = req.body.endroit;
+    match.championnat = req.body.championnat;
+    match.rendu = "";
+
+    match.save( (err) => {
+        if(err){
+            res.send('cant post match: ', err);
+        }
+        res.json({ message: match._id})
+    })
+}
+
+function dernierMatchInsere(){
+    console.log("dernier id match: "+Match_paris._id)
+}
+
+function ajoutMatchEtParis(req, res){
+    // Start a session.
+    session = db.getMongo().startSession( { readPreference: { mode: "primary" } } );
+
+    // Start a transaction
+    session.startTransaction( { readConcern: { level: "snapshot" }, writeConcern: { w: "majority" } } );
+
+    // Operations inside the transaction
+    try {
+        this.ajout(req, res);
+        pari.ajout(req, res);
+    } catch (error) {
+        // Abort transaction on error
+        session.abortTransaction();
+        throw error;
+    }
+
+    // Commit the transaction using write concern set at transaction start
+    session.commitTransaction();
+
+    session.endSession();
+}
+
+
+module.exports = { dernierMatchInsere, ajoutMatchEtParis, ajout, rechercheMulticritereSansEtat, rechercheMulticritere, getMatchById, getMatchs, getMatchsByChampionnat };
