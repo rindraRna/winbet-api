@@ -204,5 +204,23 @@ function ajoutMatchEtParis(req, res){
     session.endSession();
 }
 
+function modifier(req, res) {
+    Match_paris.findByIdAndUpdate(req.body._id, req.body, {new: true}, (err, match) => {
+        if (err) {
+            res.send(err)
+        } else {
+          res.json({message: `le match ${match._id} a été modifié`})
+        }
+    });
+}
 
-module.exports = { dernierMatchInsere, ajoutMatchEtParis, ajout, rechercheMulticritereSansEtat, rechercheMulticritere, getMatchById, getMatchs, getMatchsByChampionnat };
+function supprimer(req, res) {
+    Match_paris.findByIdAndRemove(req.params.id, (err, match) => {
+        if (err) {
+            res.send(err);
+        }
+        res.json({message: `${match._id} deleted`});
+    })
+}
+
+module.exports = { supprimer, modifier, dernierMatchInsere, ajoutMatchEtParis, ajout, rechercheMulticritereSansEtat, rechercheMulticritere, getMatchById, getMatchs, getMatchsByChampionnat };

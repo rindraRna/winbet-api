@@ -37,4 +37,25 @@ function ajout(req, res){
     })
 }
 
-module.exports = { ajout, getPariByIdMatchAndIdType, getPariByIdMatch };
+function modifier(req, res) {
+    Pari.findByIdAndUpdate(req.body._id, req.body, {new: true}, (err, pari) => {
+        if (err) {
+            res.send(err)
+        } else {
+          res.json({message: `${pari._id} updated`})
+        }
+    });
+}
+
+function getPariByIdMatchAndValeur(req, res){
+    idMatch = req.params.idMatch;
+    valeur = req.params.valeur;
+    Pari.findOne({"match._id": idMatch, "valeur": valeur}, (err, pari) => {
+        if(err){
+            res.send(err)
+        }
+        res.send(pari);
+    });
+}
+
+module.exports = { getPariByIdMatchAndValeur, modifier, ajout, getPariByIdMatchAndIdType, getPariByIdMatch };

@@ -1,4 +1,4 @@
-let express = require('express');
+let express =require('express');
 let app = express();
 let bodyParser = require('body-parser');
 let championnat = require('./routes/championnat');
@@ -48,7 +48,19 @@ let port = process.env.PORT || 8010;
 const prefix = '/api';
 
 app.route(prefix + '/championnats')
-  .get(championnat.getChampionnats);
+  .get(championnat.getChampionnats)
+  .post(championnat.ajout)
+  .put(championnat.modifier);
+
+  app.route(prefix + '/championnats/:nom')
+  .get(championnat.recherche);    
+
+app.route(prefix + '/championnat/:id')
+  .get(championnat.getChampionnatById)
+  .delete(championnat.supprimer);  
+
+app.route(prefix + '/championnat/nom/:nom')
+  .get(championnat.getChampionnatByNom);   
 
 app.route(prefix + '/comptes')
   .get(compte.getComptes);
@@ -59,23 +71,27 @@ app.route(prefix + '/compte/inscription')
 app.route(prefix + '/compte/login')
   .post(compte.login);
 app.route(prefix + '/moi')
-  .get(compte.verificationToken,compte.decoder);
-
-app.route(prefix + '/championnat/:id')
-  .get(championnat.getChampionnatById);  
-
-app.route(prefix + '/championnat/nom/:nom')
-  .get(championnat.getChampionnatByNom);  
+  .get(compte.verificationToken,compte.decoder); 
 
 app.route(prefix + '/equipes')
-  .get(equipe.getEquipes); 
+  .get(equipe.getEquipes)
+  .post(equipe.ajout)
+  .put(equipe.modifier);
+  
+app.route(prefix + '/equipes/:nom')
+  .get(equipe.recherche);   
 
 app.route(prefix + '/equipe/:nom')
-  .get(equipe.getEquipeByNom); 
+  .get(equipe.getEquipeByNom);
+
+app.route(prefix + '/equipe/id/:id')
+  .get(equipe.getEquipeById)
+  .delete(equipe.supprimer);  
   
 app.route(prefix + '/matchs')
   .get(match.getMatchs)
-  .post(match.ajout);  
+  .post(match.ajout)
+  .put(match.modifier);  
 
 app.route(prefix + '/matchs/dernierId')
   .get(match.dernierMatchInsere);
@@ -90,16 +106,21 @@ app.route(prefix + '/matchs/:date/:equipe/:championnat')
   .get(match.rechercheMulticritereSansEtat);      
 
 app.route(prefix + '/match/:id')
-  .get(match.getMatchById);  
+  .get(match.getMatchById)
+  .delete(match.supprimer);  
 
 app.route(prefix + '/pari/:idMatch/:idType')
-  .get(pari.getPariByIdMatchAndIdType);  
+  .get(pari.getPariByIdMatchAndIdType);
+
+app.route(prefix + '/pari/match/:idMatch/valeur/:valeur')
+  .get(pari.getPariByIdMatchAndValeur);  
 
 app.route(prefix + '/pari/:idMatch')
   .get(pari.getPariByIdMatch);    
 
 app.route(prefix + '/paris')
-  .post(pari.ajout);    
+  .post(pari.ajout)
+  .put(pari.modifier);    
 
 app.route(prefix + '/type/:nom')
   .get(type.getTypeByNom);    
