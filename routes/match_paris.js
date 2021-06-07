@@ -141,16 +141,25 @@ function getMatchById(req, res){
 
 function getMatchsByChampionnat(req, res){
     let championnatId = req.params.idChampionnat;
-    Match_paris.find({"championnat._id": championnatId}, (err, matchs) => {
+    Match_paris.find({"championnat._id": championnatId, "etat": 0}, (err, matchs) => {
         if(err){
             res.send(err)
         }
         res.send(matchs);
-    });
+    }).sort({date: -1});
 }
 
 function getMatchs(req, res){
     Match_paris.find((err, matchs) => {
+        if(err){
+            res.send(err)
+        }
+        res.send(matchs);
+    }).sort({date: -1});
+}
+
+function getMatchsPariable(req, res){
+    Match_paris.find({"etat": 0}, (err, matchs) => {
         if(err){
             res.send(err)
         }
@@ -223,4 +232,4 @@ function supprimer(req, res) {
     })
 }
 
-module.exports = { supprimer, modifier, dernierMatchInsere, ajoutMatchEtParis, ajout, rechercheMulticritereSansEtat, rechercheMulticritere, getMatchById, getMatchs, getMatchsByChampionnat };
+module.exports = { getMatchsPariable, supprimer, modifier, dernierMatchInsere, ajoutMatchEtParis, ajout, rechercheMulticritereSansEtat, rechercheMulticritere, getMatchById, getMatchs, getMatchsByChampionnat };

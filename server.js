@@ -7,6 +7,8 @@ let equipe = require('./routes/equipe');
 let match = require('./routes/match_paris');
 let pari = require('./routes/pari');
 let type = require('./routes/type');
+let panier = require('./routes/panier');
+let pari_panier = require('./routes/pari_panier');
 
 let mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -88,6 +90,9 @@ app.route(prefix + '/equipe/id/:id')
   .get(equipe.getEquipeById)
   .delete(equipe.supprimer);  
   
+app.route(prefix + '/matchs/pariables')
+  .get(match.getMatchsPariable);
+
 app.route(prefix + '/matchs')
   .get(match.getMatchs)
   .post(match.ajout)
@@ -125,14 +130,14 @@ app.route(prefix + '/paris')
 app.route(prefix + '/type/:nom')
   .get(type.getTypeByNom);    
 
-// app.route(prefix + '/assignments/:id')
-//   .get(assignment.getAssignment)
-//   .delete(assignment.deleteAssignment);
+app.route(prefix + '/paniers')
+  .post(panier.creer);
 
+  app.route(prefix + '/panier/:id')
+  .get(panier.getPanierById);  
 
-// app.route(prefix + '/assignments')
-//   .post(assignment.postAssignment)
-//   .put(assignment.updateAssignment);
+app.route(prefix + '/pari_paniers')
+  .post(pari_panier.ajout);  
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");

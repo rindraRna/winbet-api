@@ -72,9 +72,6 @@ function getComptes(req, res){
       }
     });
     }
-    
-
-
   });
     
   }
@@ -98,7 +95,7 @@ function getComptes(req, res){
       }
       //Créer le token de connexion et la retourne
       let token=jwt.sign({ email: compte.email, nomUtilisateur: compte.nomUtilisateur,solde:compte.solde, _id: compte._id }, 'RESTFULAPIs');
-      return res.json({ auth: true, token: token, message: 'Connexion réussie.' });
+      return res.json({ auth: true, token: token, idCompte: compte._id, message: 'Connexion réussie.' });
     });
   }
   function extractBearerToken (headerValue) {
