@@ -15,6 +15,23 @@ function getChampionnatById(req, res){
         res.json(championnat);
     })
 }
+function addChampionnat(req, res){
+    let championnat = new Championnat();
+    championnat.nom = req.body.nom;
+    if(championnat.nom === undefined ){
+        return res.status(400).send('Requête incomplète.');
+    }
+
+    console.log(" data reçu :");
+    console.log(championnat)
+
+    championnat.save( (err) => {
+        if(err){
+            res.send('le championnat ne peut pas etre sauvegardé ', err);
+        }
+        res.json({ message: `${championnat.nom} enregistré !`})
+    })
+}
 
 function getChampionnatByNom(req, res){
     Championnat.findOne({nom: req.params.nom}, (err, championnat) =>{
@@ -70,6 +87,4 @@ function recherche(req, res){
         });    
 }
 
-
-
-module.exports = { recherche, supprimer, modifier, ajout, getChampionnatByNom, getChampionnats, getChampionnatById };
+module.exports = { recherche, supprimer, modifier, ajout, getChampionnatByNom, getChampionnats, getChampionnatById, addChampionnat };

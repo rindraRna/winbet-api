@@ -8,6 +8,37 @@ function getEquipes(req, res){
         res.send(equipes);
     }).sort({nom: 1});
 }
+function addEquipe(req, res){
+    let equipe = new Equipe();
+    equipe.nom = req.body.nom;
+    if(equipe.nom === undefined ){
+        return res.status(400).send('Requête incomplète.');
+    }
+
+    console.log("poste data reçu :");
+    console.log(equipe)
+
+    equipe.save( (err) => {
+        if(err){
+            res.send('equipe ne peut pas etre sauvegardé ', err);
+        }
+        res.json({ message: `${equipe.nom} enregistré !`})
+    })
+}
+
+// Update d'un assignment (PUT)
+function updateEquipe(req, res) {
+    console.log("update equipe recu : ");
+    console.log(req.body);
+    Equipe.findByIdAndUpdate(req.body.id, req.body, {new: true}, (err, equipe) => {
+        if (err) {
+            console.log(err);
+            res.send(err)
+        } else {
+          res.json({message:  `${equipe.nom} modifié !`})
+        }
+    });
+}
 
 function getEquipeById(req, res){
     Equipe.findOne({_id: req.params.id}, (err, equipe) => {
@@ -73,4 +104,4 @@ function supprimer(req, res) {
     })
 }
 
-module.exports = { ajout, modifier, supprimer, getEquipeById, recherche, getEquipeByNom, getEquipes };
+module.exports = { ajout, modifier, supprimer, getEquipeById, recherche, getEquipeByNom, getEquipes,addEquipe, updateEquipe };

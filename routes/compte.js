@@ -24,6 +24,38 @@ function getComptes(req, res){
     })
  }
 
+ function  faireDepot(req,res){
+  let idcompte=req.body.id
+  let montant=req.body.montant;
+  console.log(montant+" montant");
+  Compte.findOne({_id: idcompte}, (err, compte) =>{
+    if(err){res.send(err)}
+    if(compte){
+      if(Number(montant)>0){
+        console.log(compte.solde+" solde avant ");
+        compte.solde=compte.solde+ Number(montant);
+  
+        console.log(compte.solde+" solde apres ");
+        Compte.findByIdAndUpdate(req.body.id,{"solde":compte.solde}, {new: true}, (err, compte) => {
+          if (err) {
+              console.log(err);
+              res.send(err)
+          } else {
+            console.log(compte)
+            res.json({message: 'solde du compte a été mis  à jour '})
+          }
+      });
+      }else{
+        res.status(400).send('valeur negative ne peut etre deposer .');
+      }
+      
+      
+    
+    }
+  })
+
+ }
+
  function inscrire(req, res) {
 
     const email = req.body.email;
@@ -38,7 +70,7 @@ function getComptes(req, res){
       return res.status(400).send('Email invalide.');
   }
 
-  Compte.findOne({nomUtilisateur: nomUtilisateur}, (err, compte) =>{
+  Compte.findOne({email: email}, (err, compte) =>{
 
      //Erreur sur mongoDB
      if(err) {
@@ -48,8 +80,8 @@ function getComptes(req, res){
 
     //Doublon trouvé
     if (compte){
-      console.log("Nom déjà existant");
-      return res.status(400).send({etat:false, message:'Nom déjà existant.'});
+      console.log("Email déjà existant");
+      return res.status(400).send({etat:false, message:'Email déjà existant.'});
     }
     if(!nomUtilisateur || !email || !motDePasse || !solde ) {
       return res.status(500).send({etat:false, message: 'insertion impossible '});
@@ -78,12 +110,12 @@ function getComptes(req, res){
 
   function login (req, res) {
 
-    const nomUtilisateur = req.body.nomUtilisateur;
+    const email = req.body.email;
     const motDePasse = req.body.motDePasse;
 
-   console.log("Connexion avec nomutilisateur : " + nomUtilisateur);
+   console.log("Connexion avec nomutilisateur : " + email);
     Compte.findOne({
-      nomUtilisateur: nomUtilisateur
+      email: email
     }, function(err, compte) {
         //Erreur sur le serveur 
       if (err){
@@ -148,4 +180,4 @@ function verificationToken(req, res, next){
 }
 
 
-module.exports = { getComptes,getCompte,inscrire,login ,decoder,verificationToken};
+module.exports = { getComptes,getCompte,inscrire,login ,decoder,verificationToken,faireDepot};

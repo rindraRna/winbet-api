@@ -58,4 +58,13 @@ function getPariByIdMatchAndValeur(req, res){
     });
 }
 
-module.exports = { getPariByIdMatchAndValeur, modifier, ajout, getPariByIdMatchAndIdType, getPariByIdMatch };
+function getPariById(req, res){
+    Pari.findOne({_id: req.params.id}, (err, pari) => {
+        if(err){
+            res.send(err)
+        }
+        res.send(pari);
+    });
+}
+
+module.exports = { getPariById, getPariByIdMatchAndValeur, modifier, ajout, getPariByIdMatchAndIdType, getPariByIdMatch };

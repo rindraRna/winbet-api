@@ -72,6 +72,8 @@ app.route(prefix + '/compte/inscription')
   .post(compte.inscrire);
 app.route(prefix + '/compte/login')
   .post(compte.login);
+app.route(prefix + '/compte/deposer')
+  .put(compte.faireDepot);
 app.route(prefix + '/moi')
   .get(compte.verificationToken,compte.decoder); 
 
@@ -117,12 +119,15 @@ app.route(prefix + '/match/:id')
 app.route(prefix + '/pari/:idMatch/:idType')
   .get(pari.getPariByIdMatchAndIdType);
 
+app.route(prefix + '/pari/:id')
+  .get(pari.getPariById);  
+
 app.route(prefix + '/pari/match/:idMatch/valeur/:valeur')
   .get(pari.getPariByIdMatchAndValeur);  
 
-app.route(prefix + '/pari/:idMatch')
-  .get(pari.getPariByIdMatch);    
-
+app.route(prefix + '/paris/:idMatch')
+  .get(pari.getPariByIdMatch);   
+  
 app.route(prefix + '/paris')
   .post(pari.ajout)
   .put(pari.modifier);    
@@ -131,13 +136,14 @@ app.route(prefix + '/type/:nom')
   .get(type.getTypeByNom);    
 
 app.route(prefix + '/paniers')
-  .post(panier.creer);
+  .post(panier.creer)
+  .put(panier.modifier);
 
-  app.route(prefix + '/panier/:id')
+app.route(prefix + '/panier/:id')
   .get(panier.getPanierById);  
 
 app.route(prefix + '/pari_paniers')
-  .post(pari_panier.ajout);  
+  .post(pari_panier.ajout);    
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");

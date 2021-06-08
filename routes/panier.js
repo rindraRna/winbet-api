@@ -24,4 +24,15 @@ function getPanierById(req, res){
     });
 }
 
-module.exports = { creer, getPanierById };
+function modifier(req, res) {
+    Panier.findByIdAndUpdate(req.body._id, req.body, {new: true}, (err, panier) => {
+        if (err) {
+            res.send(err)
+        } else {
+          res.json({message: `${panier._id} updated`})
+        }
+    });
+
+}
+
+module.exports = { modifier, creer, getPanierById };
