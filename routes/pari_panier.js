@@ -12,4 +12,24 @@ function ajout(req, res){
     })
 }
 
-module.exports = { ajout };
+function toutSupprimer(req, res){
+    Pari_Panier.remove( (err, pari_Panier) => {
+        if (err) {
+            res.send(err)
+        } else {
+          res.json({message: `Pari_Panier tout supprimés`})
+        }
+    })
+}
+
+function getParisByIdPanier(req, res){
+    let idPanier = req.params.idPanier;
+    Pari_Panier.find({"panier._id": idPanier}, (err, paris) => {
+        if(err){
+            res.send(err)
+        }
+        res.send(paris);
+    });
+}
+
+module.exports = { getParisByIdPanier, toutSupprimer, ajout };

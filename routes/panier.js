@@ -35,4 +35,24 @@ function modifier(req, res) {
 
 }
 
-module.exports = { modifier, creer, getPanierById };
+function toutSupprimer(req, res){
+    Panier.remove( (err, panier) => {
+        if (err) {
+            res.send(err)
+        } else {
+          res.json({message: `paniers tout supprimés`})
+        }
+    })
+}
+
+function getPanierByIdCompte(req, res){
+    let idCompte = req.params.idCompte;
+    Panier.find({"compte._id": idCompte}, (err, paniers) => {
+        if(err){
+            res.send(err)
+        }
+        res.send(paniers);
+    }).sort({date: -1});
+}
+
+module.exports = { getPanierByIdCompte, toutSupprimer, modifier, creer, getPanierById };

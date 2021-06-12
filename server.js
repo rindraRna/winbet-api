@@ -53,14 +53,11 @@ app.route(prefix + '/championnats')
   .get(championnat.getChampionnats)
   .post(championnat.ajout)
   .put(championnat.modifier);
-
-  app.route(prefix + '/championnats/:nom')
+app.route(prefix + '/championnats/:nom')
   .get(championnat.recherche);    
-
 app.route(prefix + '/championnat/:id')
   .get(championnat.getChampionnatById)
   .delete(championnat.supprimer);  
-
 app.route(prefix + '/championnat/nom/:nom')
   .get(championnat.getChampionnatByNom);   
 
@@ -74,6 +71,8 @@ app.route(prefix + '/compte/login')
   .post(compte.login);
 app.route(prefix + '/compte/deposer')
   .put(compte.faireDepot);
+app.route(prefix + '/compte/decaisser')
+  .post(compte.decaisser);
 app.route(prefix + '/moi')
   .get(compte.verificationToken,compte.decoder); 
 
@@ -81,53 +80,42 @@ app.route(prefix + '/equipes')
   .get(equipe.getEquipes)
   .post(equipe.ajout)
   .put(equipe.modifier);
-  
 app.route(prefix + '/equipes/:nom')
   .get(equipe.recherche);   
-
 app.route(prefix + '/equipe/:nom')
   .get(equipe.getEquipeByNom);
-
 app.route(prefix + '/equipe/id/:id')
   .get(equipe.getEquipeById)
   .delete(equipe.supprimer);  
   
 app.route(prefix + '/matchs/pariables')
   .get(match.getMatchsPariable);
-
 app.route(prefix + '/matchs')
   .get(match.getMatchs)
   .post(match.ajout)
   .put(match.modifier);  
-
 app.route(prefix + '/matchs/dernierId')
   .get(match.dernierMatchInsere);
-
 app.route(prefix + '/matchs/:idChampionnat')
   .get(match.getMatchsByChampionnat);
-  
 app.route(prefix + '/matchs/:date/:equipe/:championnat/:etat')
   .get(match.rechercheMulticritere);      
-
 app.route(prefix + '/matchs/:date/:equipe/:championnat')
   .get(match.rechercheMulticritereSansEtat);      
-
 app.route(prefix + '/match/:id')
   .get(match.getMatchById)
   .delete(match.supprimer);  
+app.route(prefix + '/matchs/recherche/:texte')
+  .get(match.rechercheSimple);  
 
 app.route(prefix + '/pari/:idMatch/:idType')
   .get(pari.getPariByIdMatchAndIdType);
-
 app.route(prefix + '/pari/:id')
   .get(pari.getPariById);  
-
 app.route(prefix + '/pari/match/:idMatch/valeur/:valeur')
   .get(pari.getPariByIdMatchAndValeur);  
-
 app.route(prefix + '/paris/:idMatch')
   .get(pari.getPariByIdMatch);   
-  
 app.route(prefix + '/paris')
   .post(pari.ajout)
   .put(pari.modifier);    
@@ -137,13 +125,17 @@ app.route(prefix + '/type/:nom')
 
 app.route(prefix + '/paniers')
   .post(panier.creer)
-  .put(panier.modifier);
-
+  .put(panier.modifier)
+  .delete(panier.toutSupprimer);
 app.route(prefix + '/panier/:id')
   .get(panier.getPanierById);  
+app.route(prefix + '/paniers/compte/:idCompte')
+  .get(panier.getPanierByIdCompte);  
 
-app.route(prefix + '/pari_paniers')
-  .post(pari_panier.ajout);    
+app.route(prefix + '/pari_paniers')   
+  .post(pari_panier.ajout);
+app.route(prefix + '/pari_paniers/panier/:idPanier')   
+  .get(pari_panier.getParisByIdPanier);  
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");

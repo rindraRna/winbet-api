@@ -1,6 +1,33 @@
 let Match_paris = require('../model/match_paris');
 let pari = require('../routes/pari');
 
+function rechercheSimple(req, res){
+    var texte = req.params.texte;
+    Match_paris.find(
+        {
+            $or: [
+                {
+                    "equipe1.nom":  {
+                        $regex: texte,
+                        $options: 'i'
+                    }
+                },
+                {
+                    "equipe2.nom":  {
+                        $regex: texte,
+                        $options: 'i'
+                    }
+                }
+            ],
+            "etat": 0
+        }, (err, matchs) => {
+        if(err){
+            res.send(err)
+        }
+        res.send(matchs);
+    });
+}
+
 function rechercheMulticritereSansEtat(req, res){
     var date = req.params.date;
     var equipe = req.params.equipe;
@@ -232,4 +259,4 @@ function supprimer(req, res) {
     })
 }
 
-module.exports = { getMatchsPariable, supprimer, modifier, dernierMatchInsere, ajoutMatchEtParis, ajout, rechercheMulticritereSansEtat, rechercheMulticritere, getMatchById, getMatchs, getMatchsByChampionnat };
+module.exports = { rechercheSimple, getMatchsPariable, supprimer, modifier, dernierMatchInsere, ajoutMatchEtParis, ajout, rechercheMulticritereSansEtat, rechercheMulticritere, getMatchById, getMatchs, getMatchsByChampionnat };

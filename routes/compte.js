@@ -2,6 +2,7 @@
 let Compte = require('../model/compte');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+var nodemailer = require('nodemailer');
 
 // Récupérer tous les assignments (GET)
 function getComptes(req, res){
@@ -26,7 +27,7 @@ function getComptes(req, res){
 
  function  faireDepot(req,res){
   let idcompte=req.body.id
-  let montant=req.body.montant;
+  let montant=req.body.montant; 
   console.log(montant+" montant");
   Compte.findOne({_id: idcompte}, (err, compte) =>{
     if(err){res.send(err)}
@@ -48,65 +49,81 @@ function getComptes(req, res){
       }else{
         res.status(400).send('valeur negative ne peut etre deposer .');
       }
-      
-      
-    
     }
   })
-
  }
 
  function inscrire(req, res) {
 
-    const email = req.body.email;
-    const nomUtilisateur = req.body.nomUtilisateur;
-    const motDePasse = req.body.motDePasse;
-    const solde = req.body.solde;
+  const email = req.body.email;
+  const nomUtilisateur = req.body.nomUtilisateur;
+  const motDePasse = req.body.motDePasse;
+  const solde = req.body.solde;
 
-  //Vérification email
-  let emailRegex = /\S+@\S+\.\S+/;
-  if (!emailRegex.test(email)){
-      console.log("Email invalide");
-      return res.status(400).send('Email invalide.');
+//Vérification email
+let emailRegex = /\S+@\S+\.\S+/;
+if (!emailRegex.test(email)){
+    console.log("Email invalide");
+    return res.status(400).send('Email invalide.');
+}
+
+Compte.findOne({email: email}, (err, compte) =>{
+
+   //Erreur sur mongoDB
+   if(err) {
+    console.log(err)
+    return res.status(500).send('Erreur sur le serveur.');
   }
 
-  Compte.findOne({email: email}, (err, compte) =>{
-
-     //Erreur sur mongoDB
-     if(err) {
-      console.log(err)
-      return res.status(500).send('Erreur sur le serveur.');
-    }
-
-    //Doublon trouvé
-    if (compte){
-      console.log("Email déjà existant");
-      return res.status(400).send({etat:false, message:'Email déjà existant.'});
-    }
-    if(!nomUtilisateur || !email || !motDePasse || !solde ) {
-      return res.status(500).send({etat:false, message: 'insertion impossible '});
-    }else {
-      var nouveauCompte = new Compte();
-      nouveauCompte.nomUtilisateur=nomUtilisateur;
+  //Doublon trouvé
+  if (compte){
+    console.log("Email déjà existant");
+    return res.status(400).send({etat:false, message:'Email déjà existant.'});
+  }
+  if(!nomUtilisateur || !email || !motDePasse || !solde ) {
+    return res.status(500).send({etat:false, message: 'insertion impossible '});
+  }else {
+    var nouveauCompte = new Compte();
+    nouveauCompte.nomUtilisateur=nomUtilisateur;
+    nouveauCompte.email=email;
+    nouveauCompte.solde=solde;
+  
+    nouveauCompte.hash_motDePasse =bcrypt.hashSync(motDePasse,8);
+    nouveauCompte.save(function(err, compte) {
+    if (err) {
+      return res.status(400).send({
+        message: err
+      });
+    } else {
+      compte.hash_motDePasse=undefined;
+      var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'tptituwinbet@gmail.com',
+          pass: 'tptituwinbet2021'
+        }
+      });
       
-      nouveauCompte.email=email;
-      nouveauCompte.solde=solde;
-    
-      nouveauCompte.hash_motDePasse =bcrypt.hashSync(motDePasse,8);
-      nouveauCompte.save(function(err, compte) {
-      if (err) {
-        return res.status(400).send({
-          message: err
-        });
-      } else {
-        compte.hash_motDePasse=undefined;
-        return res.json({etat:true,  compte});
-      }
-    });
+      var mailOptions = {
+        from: 'tptituwinbet@gmail.com',
+        to: compte.email,
+        subject: 'Bienvenue sur winbet',
+        text: 'Vous êtes bien inscrit(e) avec le nom '+compte.nomUtilisateur
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      }); 
+      return res.json({etat:true,  compte});
     }
   });
-    
   }
+});
+}
 
   function login (req, res) {
 
@@ -169,8 +186,6 @@ function verificationToken(req, res, next){
     });
 }
   function decoder(req, res){
-
-
     const token = req.headers.authorization && extractBearerToken(req.headers.authorization)
     // Décodage du token
     const decoded = jwt.decode(token, { complete: false })
@@ -179,5 +194,27 @@ function verificationToken(req, res, next){
     return res.json({ content: decoded })
 }
 
+function decaisser(req,res){
+  let idCompte=req.body.id
+  let montant=req.body.montant;
+  Compte.findOne({_id: idCompte}, (err, compte) => {
+    if(err){ res.send(err) }
+    if(compte){
+      console.log("compte.solde ancien: "+compte.solde);
+      console.log("montant: "+Number(montant));
+      compte.solde = compte.solde - Number(montant);
+      console.log("compte.solde nouveau: "+compte.solde);
+      Compte.findByIdAndUpdate(req.body.id, {"solde":compte.solde}, {new: true}, (err, compte) => {
+        if (err) {
+            console.log(err);
+            res.send(err)
+        } else {
+          console.log(compte)
+          res.json({message: 'solde décaissé'})
+        }
+      })
+    }
+  });
+}
 
-module.exports = { getComptes,getCompte,inscrire,login ,decoder,verificationToken,faireDepot};
+module.exports = { decaisser, getComptes, getCompte, inscrire, login , decoder, verificationToken, faireDepot};
