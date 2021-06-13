@@ -2,7 +2,7 @@
 let Compte = require('../model/compte');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-var nodemailer = require('nodemailer');
+var nodemailer = require('nodemailer'); 
 
 // Récupérer tous les assignments (GET)
 function getComptes(req, res){

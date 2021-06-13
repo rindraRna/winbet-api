@@ -72,7 +72,7 @@ app.route(prefix + '/compte/login')
 app.route(prefix + '/compte/deposer')
   .put(compte.faireDepot);
 app.route(prefix + '/compte/decaisser')
-  .post(compte.decaisser);
+  .put(compte.decaisser);
 app.route(prefix + '/moi')
   .get(compte.verificationToken,compte.decoder); 
 
