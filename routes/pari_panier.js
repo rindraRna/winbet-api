@@ -32,4 +32,25 @@ function getParisByIdPanier(req, res){
     });
 }
 
-module.exports = { getParisByIdPanier, toutSupprimer, ajout };
+function getPariByIdMatchAndValeur(req, res){
+    idMatch = req.params.idMatch;
+    valeur = req.params.valeur;
+    Pari_Panier.find({"pari.match._id": idMatch, "pari.valeur": valeur}, (err, pari_Panier) => {
+        if(err){
+            res.send(err)
+        }
+        res.send(pari_Panier);
+    });
+}
+
+function modifier(req, res) {
+    Pari_Panier.findByIdAndUpdate(req.body._id, req.body, {new: true}, (err, pari_Panier) => {
+        if (err) {
+            res.send(err)
+        } else {
+          res.json({message: `le pari_Panier ${pari_Panier._id} a été modifié`})
+        }
+    });
+}
+
+module.exports = { modifier, getPariByIdMatchAndValeur, getParisByIdPanier, toutSupprimer, ajout };

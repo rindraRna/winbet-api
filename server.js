@@ -93,7 +93,8 @@ app.route(prefix + '/matchs/pariables')
 app.route(prefix + '/matchs')
   .get(match.getMatchs)
   .post(match.ajout)
-  .put(match.modifier);  
+  .put(match.modifier)
+  .delete(match.toutSupprimer); ;  
 app.route(prefix + '/matchs/dernierId')
   .get(match.dernierMatchInsere);
 app.route(prefix + '/matchs/:idChampionnat')
@@ -118,7 +119,8 @@ app.route(prefix + '/paris/:idMatch')
   .get(pari.getPariByIdMatch);   
 app.route(prefix + '/paris')
   .post(pari.ajout)
-  .put(pari.modifier);    
+  .put(pari.modifier)
+  .delete(pari.toutSupprimer);    
 
 app.route(prefix + '/type/:nom')
   .get(type.getTypeByNom);    
@@ -133,9 +135,13 @@ app.route(prefix + '/paniers/compte/:idCompte')
   .get(panier.getPanierByIdCompte);  
 
 app.route(prefix + '/pari_paniers')   
-  .post(pari_panier.ajout);
+  .delete(pari_panier.toutSupprimer)
+  .post(pari_panier.ajout)
+  .put(pari_panier.modifier);
 app.route(prefix + '/pari_paniers/panier/:idPanier')   
   .get(pari_panier.getParisByIdPanier);  
+  app.route(prefix + '/pari_panier/match/:idMatch/valeur/:valeur')   
+  .get(pari_panier.getPariByIdMatchAndValeur);   
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");

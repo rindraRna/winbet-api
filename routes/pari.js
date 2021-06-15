@@ -28,6 +28,7 @@ function ajout(req, res){
     pari.valeur = req.body.valeur;
     pari.cote = req.body.cote;
     pari.mise = req.body.mise;
+    pari.resultat = req.body.resultat;
 
     pari.save( (err) => {
         if(err){
@@ -67,4 +68,14 @@ function getPariById(req, res){
     });
 }
 
-module.exports = { getPariById, getPariByIdMatchAndValeur, modifier, ajout, getPariByIdMatchAndIdType, getPariByIdMatch };
+function toutSupprimer(req, res){
+    Pari.remove( (err, pari) => {
+        if (err) {
+            res.send(err)
+        } else {
+          res.json({message: `Pari tout supprimé`})
+        }
+    })
+}
+
+module.exports = { toutSupprimer, getPariById, getPariByIdMatchAndValeur, modifier, ajout, getPariByIdMatchAndIdType, getPariByIdMatch };

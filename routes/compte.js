@@ -25,7 +25,7 @@ function getComptes(req, res){
     })
  }
 
- function  faireDepot(req,res){
+ function faireDepot(req,res){
   let idcompte=req.body.id
   let montant=req.body.montant; 
   console.log(montant+" montant");

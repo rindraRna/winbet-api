@@ -203,7 +203,7 @@ function ajout(req, res){
     match.stade = req.body.stade;
     match.endroit = req.body.endroit;
     match.championnat = req.body.championnat;
-    match.rendu = "";
+    match.statut = "";
 
     match.save( (err) => {
         if(err){
@@ -259,4 +259,14 @@ function supprimer(req, res) {
     })
 }
 
-module.exports = { rechercheSimple, getMatchsPariable, supprimer, modifier, dernierMatchInsere, ajoutMatchEtParis, ajout, rechercheMulticritereSansEtat, rechercheMulticritere, getMatchById, getMatchs, getMatchsByChampionnat };
+function toutSupprimer(req, res){
+    Match_paris.remove( (err, match_paris) => {
+        if (err) {
+            res.send(err)
+        } else {
+          res.json({message: `Match_paris tout supprimé`})
+        }
+    })
+}
+
+module.exports = { toutSupprimer, rechercheSimple, getMatchsPariable, supprimer, modifier, dernierMatchInsere, ajoutMatchEtParis, ajout, rechercheMulticritereSansEtat, rechercheMulticritere, getMatchById, getMatchs, getMatchsByChampionnat };

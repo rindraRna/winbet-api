@@ -6,7 +6,8 @@ let PariSchema = Schema({
     type: Object, 
     valeur: String,
     cote: Number,
-    mise: Number
+    mise: Number,
+    resultat: Number
 });
 
 // C'est à travers ce modèle Mongoose qu'on pourra faire le CRUD
