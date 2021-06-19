@@ -115,7 +115,7 @@ app.route(prefix + '/pari/:id')
   .get(pari.getPariById);  
 app.route(prefix + '/pari/match/:idMatch/valeur/:valeur')
   .get(pari.getPariByIdMatchAndValeur);  
-app.route(prefix + '/paris/:idMatch')
+app.route(prefix + '/pari/match/id/:idMatch')
   .get(pari.getPariByIdMatch);   
 app.route(prefix + '/paris')
   .post(pari.ajout)
