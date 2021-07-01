@@ -3,9 +3,9 @@ let Championnat = require('../model/championnat');
 function getChampionnats(req, res){
     Championnat.find((err, championnats) => {
         if(err){
-            res.send(err)
+            return res.send(err)
         }
-        res.send(championnats);
+        return res.send(championnats);
     }).sort({nom: 1});
 }
 
