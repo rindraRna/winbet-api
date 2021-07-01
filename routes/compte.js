@@ -217,4 +217,52 @@ function decaisser(req,res){
   });
 }
 
-module.exports = { decaisser, getComptes, getCompte, inscrire, login , decoder, verificationToken, faireDepot};
+function getNbUtilisateur(req, res){
+  Compte.aggregate(
+      [
+          { $group: { _id: "_id", resultat: { $sum: 1 } } }
+      ], (err, data) => {
+          if(err){
+              res.send(err)
+          }
+          res.json(data[0]);
+      }
+  );
+}
+
+function recherche(req, res){
+  var mot = req.params.mot;
+  Compte.find(
+    {
+      $or: [
+        {
+          "nomUtilisateur":  {
+              $regex: mot,
+              $options: 'i'
+          }
+        },
+        {
+          "email":  {
+              $regex: mot,
+              $options: 'i'
+          }
+        }
+      ]
+    }, (err, equipes) => {
+    if(err){
+        res.send(err)
+    }
+    res.send(equipes);
+  });    
+}
+
+function supprimer(req, res) {
+  Compte.findByIdAndRemove(req.params.id, (err, compte) => {
+      if (err) {
+          res.send(err);
+      }
+      res.json({message: `${compte.nomUtilisateur} deleted`});
+  })
+}
+
+module.exports = { supprimer, recherche, getNbUtilisateur, decaisser, getComptes, getCompte, inscrire, login , decoder, verificationToken, faireDepot};

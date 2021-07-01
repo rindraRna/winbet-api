@@ -55,4 +55,26 @@ function getPanierByIdCompte(req, res){
     }).sort({date: -1});
 }
 
-module.exports = { getPanierByIdCompte, toutSupprimer, modifier, creer, getPanierById };
+function getNbPanierByMois(req, res){
+    let mois = Number(req.params.mois);
+
+    Panier.aggregate(
+        [
+            {$project: { "month" : {$month: '$date'}}},
+            {$match: { month: mois}},
+            { $group: { _id: "_id", resultat: { $sum: 1 } } }
+        ], (err, data) => {
+            if(err){
+                res.send(err)
+            }
+            if(data.length == 0){
+                res.json({"_id":"_id","resultat":0});
+            }
+            else{
+                res.json(data[0]);
+            }
+        }
+    );
+}
+
+module.exports = { getNbPanierByMois, getPanierByIdCompte, toutSupprimer, modifier, creer, getPanierById };

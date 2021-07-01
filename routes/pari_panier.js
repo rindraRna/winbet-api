@@ -53,4 +53,23 @@ function modifier(req, res) {
     });
 }
 
-module.exports = { modifier, getPariByIdMatchAndValeur, getParisByIdPanier, toutSupprimer, ajout };
+function revenuApplication(req, res){
+    Pari_Panier.aggregate(
+        [
+            { $match: { "pari.resultat": 2 } },
+            { $group: { _id: "_id", resultat: { $sum: '$pari.mise' } } }
+        ], (err, data) => {
+            if(err){
+                res.send(err)
+            }
+            if(data.length == 0){
+                res.json({"_id":"_id","resultat":0});
+            }
+            else{
+                res.json(data[0]);
+            }
+        }
+    );
+}
+
+module.exports = { revenuApplication, modifier, getPariByIdMatchAndValeur, getParisByIdPanier, toutSupprimer, ajout };

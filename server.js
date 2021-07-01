@@ -63,10 +63,15 @@ app.route(prefix + '/championnat/nom/:nom')
 
 app.route(prefix + '/comptes')
   .get(compte.getComptes);
+app.route(prefix + '/comptes/:mot')
+  .get(compte.recherche);  
 app.route(prefix + '/compte/:id')
-  .get(compte.getCompte);
+  .get(compte.getCompte)
+  .delete(compte.supprimer);
 app.route(prefix + '/compte/inscription')
   .post(compte.inscrire);
+app.route(prefix + '/comptes/nombre/utilisateur')
+  .get(compte.getNbUtilisateur);
 app.route(prefix + '/compte/login')
   .post(compte.login);
 app.route(prefix + '/compte/deposer')
@@ -133,6 +138,8 @@ app.route(prefix + '/panier/:id')
   .get(panier.getPanierById);  
 app.route(prefix + '/paniers/compte/:idCompte')
   .get(panier.getPanierByIdCompte);  
+app.route(prefix + '/paniers/nb/mois/:mois')
+  .get(panier.getNbPanierByMois);  
 
 app.route(prefix + '/pari_paniers')   
   .delete(pari_panier.toutSupprimer)
@@ -140,7 +147,9 @@ app.route(prefix + '/pari_paniers')
   .put(pari_panier.modifier);
 app.route(prefix + '/pari_paniers/panier/:idPanier')   
   .get(pari_panier.getParisByIdPanier);  
-  app.route(prefix + '/pari_panier/match/:idMatch/valeur/:valeur')   
+app.route(prefix + '/pari_paniers/revenu')   
+  .get(pari_panier.revenuApplication);  
+app.route(prefix + '/pari_panier/match/:idMatch/valeur/:valeur')   
   .get(pari_panier.getPariByIdMatchAndValeur);   
 
 // On démarre le serveur
