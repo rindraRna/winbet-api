@@ -1,8 +1,5 @@
 let express =require('express');
-const cors = require('cors');
 let app = express();
-app.use(cors());
-app.options('*', cors());
 let bodyParser = require('body-parser');
 let championnat = require('./routes/championnat');
 let compte = require('./routes/compte');
