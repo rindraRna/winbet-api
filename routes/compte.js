@@ -64,7 +64,7 @@ function getComptes(req, res){
 let emailRegex = /\S+@\S+\.\S+/;
 if (!emailRegex.test(email)){
     console.log("Email invalide");
-    return res.status(400).send('Email invalide.');
+    return res.status(400).send({etat:false, message:'Email invalide'});
 }
 
 Compte.findOne({email: email}, (err, compte) =>{
@@ -78,10 +78,10 @@ Compte.findOne({email: email}, (err, compte) =>{
   //Doublon trouvé
   if (compte){
     console.log("Email déjà existant");
-    return res.status(400).send({etat:false, message:'Email déjà existant.'});
+    return res.status(400).send({etat:false, message:'Email déjà existant'});
   }
   if(!nomUtilisateur || !email || !motDePasse || !solde ) {
-    return res.status(500).send({etat:false, message: 'insertion impossible '});
+    return res.status(500).send({etat:false, message: 'Insertion impossible '});
   }else {
     var nouveauCompte = new Compte();
     nouveauCompte.nomUtilisateur=nomUtilisateur;
@@ -108,7 +108,7 @@ Compte.findOne({email: email}, (err, compte) =>{
         from: 'tptituwinbet@gmail.com',
         to: compte.email,
         subject: 'Bienvenue sur winbet',
-        text: 'Vous êtes bien inscrit(e) avec le nom '+compte.nomUtilisateur
+        text: 'Vous êtes bien inscrit(e) avec le nom '+compte.nomUtilisateur+ " et le mot de passe "+motDePasse
       };
       
       transporter.sendMail(mailOptions, function(error, info){
