@@ -1,4 +1,4 @@
-let express =require('express');
+let express = require('express');
 let app = express();
 let bodyParser = require('body-parser');
 let championnat = require('./routes/championnat');
