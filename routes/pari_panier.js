@@ -1,4 +1,5 @@
 let Pari_Panier = require('../model/pari_panier');
+let Panier = require('../model/panier');
 
 function ajout(req, res){
     let pari_panier = new Pari_Panier();
@@ -72,4 +73,63 @@ function revenuApplication(req, res){
     );
 }
 
-module.exports = { revenuApplication, modifier, getPariByIdMatchAndValeur, getParisByIdPanier, toutSupprimer, ajout };
+function getNbPariByIdUtilisateur(req, res){
+    let idUtilisateur = req.params.id
+    Pari_Panier.aggregate(
+        [
+            { $match: { "panier.compte._id": idUtilisateur } },
+            { $group: { _id: "$panier.compte._id", resultat: { $sum: 1 } } }
+        ], (err, data) => {
+            if(err){
+                res.send(err)
+            }
+            res.json(data[0]);
+        }
+    );
+}
+
+function donneesQrCode(req, res){
+    let idPanier = req.params.idPanier
+    var reponse = ""
+    var sommeGagne = 0;
+    var sommePerdu = 0;
+    Panier.findOne({_id: idPanier}, (err, panier) => {
+        if(err){
+            res.send(err)
+        }
+        reponse += "Date: "+panier.date+"\n" 
+        reponse += "Mise versée: "+panier.miseTotal+"\n" 
+        reponse += "Gain potentiel : "+panier.gainTotal+"\n" 
+        reponse += "-----------------\n"
+        Pari_Panier.find({"panier._id": idPanier}, (err, paris) => {
+            if(err){
+                res.send(err)
+            }
+            let taille = paris.length
+            for(var i = 0; i<taille; i++){
+                reponse += "Match: "+paris[i].pari.match.equipe1.nom+" vs "+paris[i].pari.match.equipe2.nom+" ("+paris[i].pari.match.date+" à "+paris[i].pari.match.date+")\n"
+                reponse += "Pari: "+paris[i].pari.type.nom+": "+paris[i].pari.valeur+"\n"
+                reponse += "Cote: "+paris[i].pari.cote+"\n"
+                reponse += "Mise: "+paris[i].pari.mise+" Ar\n"
+                reponse += "Gain: "+paris[i].pari.gain+" Ar\n"
+                if(paris[i].pari.resultat == 0){
+                    reponse += "Résultat: Match non terminé\n"
+                }
+                else if(paris[i].pari.resultat == 1){
+                    sommeGagne += paris[i].pari.gain;
+                    reponse += "Résultat: Gagné\n"
+                }
+                else if(paris[i].pari.resultat == 2){
+                    sommePerdu += paris[i].pari.mise;
+                    reponse += "Résultat: Perdu\n"
+                }
+                reponse += "-----------------\n"
+            }
+            reponse += "Résultat final: Vous avez gagné "+sommeGagne+" Ar et perdu "+sommePerdu+" Ar"
+            res.json({message: reponse});
+        });
+    });
+
+}
+
+module.exports = { donneesQrCode, getNbPariByIdUtilisateur, revenuApplication, modifier, getPariByIdMatchAndValeur, getParisByIdPanier, toutSupprimer, ajout };

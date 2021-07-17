@@ -147,10 +147,14 @@ app.route(prefix + '/pari_paniers')
   .put(pari_panier.modifier);
 app.route(prefix + '/pari_paniers/panier/:idPanier')   
   .get(pari_panier.getParisByIdPanier);  
+app.route(prefix + '/pari_panier/compte/:id')   
+  .get(pari_panier.getNbPariByIdUtilisateur);  
 app.route(prefix + '/pari_paniers/revenu')   
   .get(pari_panier.revenuApplication);  
 app.route(prefix + '/pari_panier/match/:idMatch/valeur/:valeur')   
   .get(pari_panier.getPariByIdMatchAndValeur);   
+app.route(prefix + '/pari_panier/qrCode/:idPanier')   
+  .get(pari_panier.donneesQrCode); 
 
 // On démarre le serveur
 app.listen(port, "0.0.0.0");
