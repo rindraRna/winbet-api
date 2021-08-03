@@ -1,4 +1,4 @@
-let express = require('express');
+let express =require('express');
 let app = express();
 let bodyParser = require('body-parser');
 let championnat = require('./routes/championnat');
@@ -9,6 +9,7 @@ let pari = require('./routes/pari');
 let type = require('./routes/type');
 let panier = require('./routes/panier');
 let pari_panier = require('./routes/pari_panier');
+let administrateur = require('./routes/administrateur');
 
 let mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -80,6 +81,14 @@ app.route(prefix + '/compte/decaisser')
   .put(compte.decaisser);
 app.route(prefix + '/moi')
   .get(compte.verificationToken,compte.decoder); 
+
+app.route(prefix + '/administrateur/inscription')
+  .post(administrateur.inscrire);
+app.route(prefix + '/administrateur/login')
+  .post(administrateur.login);
+app.route(prefix + '/administrateur/moi')
+  .get(administrateur.verificationToken2,administrateur.decoder2);
+
 
 app.route(prefix + '/equipes')
   .get(equipe.getEquipes)
